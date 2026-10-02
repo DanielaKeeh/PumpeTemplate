@@ -1,0 +1,508 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Nothing+You+Could+Do&family=Permanent+Marker&display=swap");
+@import "tailwindcss";
+
+:root {
+  --navy-1: #293d7c;
+  --navy-2: #22335f;
+  --cream: #d7d0c8;
+  --error: #ff9a7b;
+  /* Scroll-driven chapter background, written by useScrollTheme() (OKLab
+     blend between --navy-1 and --navy-2 as you scroll between them). The
+     foreground the hook also computes isn't used here — with only two dark
+     navy chapters, the text color is simply always --cream. */
+  --theme-bg: var(--navy-1);
+  --sans: "DM Sans", Arial, sans-serif;
+  --hand: "Nothing You Could Do", cursive;
+  --display: "Permanent Marker", "Nothing You Could Do", cursive;
+  --page: clamp(1.4rem, 5vw, 5.5rem);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --shadow-photo: 0 1.2rem 2.8rem rgba(0, 0, 0, 0.28);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --reveal: 900ms;
+}
+
+* { box-sizing: border-box; }
+html {
+  overflow-x: clip;
+  background: var(--theme-bg);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  overflow-x: clip;
+  color: var(--cream);
+  background: var(--theme-bg);
+  font-family: var(--sans);
+}
+body::before {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+button, input, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible {
+  outline: 2px solid var(--focus, var(--cream));
+  outline-offset: 4px;
+}
+img { display: block; max-width: 100%; height: auto; }
+/* <picture> stays out of layout so the <img> behaves as the direct child. */
+picture { display: contents; }
+h1, h2, p { margin-top: 0; }
+section[data-bg] { background: transparent; }
+
+.skip-link {
+  position: fixed;
+  z-index: 200;
+  top: calc(1rem + var(--safe-top));
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--navy-2);
+  background: var(--cream);
+  transform: translateY(-150%);
+  --focus: var(--navy-2);
+}
+.skip-link:focus { transform: translateY(0); }
+
+.note { font-family: var(--hand); }
+
+/* ---------- Reveals (transform + opacity only) ----------
+   stagger: children enter one by one (--i set from JS)
+   self:    the element itself
+   photo:   the element itself, with a slight scale */
+[data-reveal="stagger"] > :not(picture),
+[data-reveal="stagger"] > picture > img,
+[data-reveal="self"],
+[data-reveal="photo"] {
+  opacity: 0;
+  translate: 0 1.6rem;
+  transition:
+    opacity var(--reveal) var(--ease),
+    translate var(--reveal) var(--ease),
+    scale var(--reveal) var(--ease);
+  transition-delay: calc(var(--i, 0) * 110ms);
+}
+[data-reveal="photo"] { translate: 0 1rem; scale: 0.98; }
+.is-visible[data-reveal="stagger"] > :not(picture),
+.is-visible[data-reveal="stagger"] > picture > img,
+.is-visible[data-reveal="self"],
+.is-visible[data-reveal="photo"] {
+  opacity: 1;
+  translate: none;
+  scale: none;
+}
+.is-animating[data-reveal="stagger"] > :not(picture),
+.is-animating[data-reveal="stagger"] > picture > img,
+.is-animating[data-reveal="self"],
+.is-animating[data-reveal="photo"] {
+  will-change: opacity, translate, scale;
+}
+
+/* ---------- Tape (reused decoration on a few carousel photos) ---------- */
+.tape {
+  position: absolute;
+  z-index: 4;
+  top: -0.6rem;
+  left: 38%;
+  width: 4rem;
+  height: 1.5rem;
+  background: rgba(215, 208, 200, 0.5);
+  transform: rotate(-4deg);
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+}
+.tape-blue { background: rgba(140, 170, 235, 0.45); }
+
+/* ---------- Poster sections (shared by "The Invitation" and "The RSVP") ----------
+   Full-bleed, centered, solid-color "announcement" layout. The two chapters
+   share this scaffold and differ only in their content. */
+.poster {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  overflow: hidden;
+  padding: calc(var(--space-y, 4rem) + var(--safe-top)) var(--page) calc(4rem + var(--safe-bottom));
+  text-align: center;
+}
+.poster-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 44rem;
+}
+.poster-label {
+  margin-bottom: 1.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.poster-title {
+  margin: 0 0 1.5rem;
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+.poster-1 .poster-title { font-size: clamp(3rem, 9vw, 7rem); }
+.poster-2 .poster-title { font-size: clamp(3.5rem, 11vw, 8.5rem); }
+.poster-subtitle {
+  max-width: 30rem;
+  margin-bottom: 2.5rem;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  line-height: 1.5;
+}
+.poster-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 2.5rem;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+}
+.poster-details p { margin: 0; }
+.poster-note { font-size: 1.3rem; opacity: 0.9; }
+
+/* Mobile only (conditionally rendered in JS, not just hidden here): a looping
+   video fills the chapter instead of the flat color alone. */
+.hero-video { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.hero-video-el { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+/* Flat navy tint so the cream text stays readable no matter which video
+   frame is showing, and the whole thing still reads as one palette. */
+.hero-video-overlay { position: absolute; z-index: 1; inset: 0; background: rgba(41, 61, 124, 0.6); }
+
+.poster-arrow {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(1.75rem + var(--safe-bottom));
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  translate: -50% 0;
+  animation: arrowBob 1.8s ease-in-out infinite;
+}
+
+/* ---------- RSVP interaction (lives inside .poster-2) ---------- */
+.poster-attendance {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  border: 0;
+}
+.poster-attendance button {
+  min-height: 3.25rem;
+  padding: 0 1.5rem;
+  border: 1.5px solid var(--cream);
+  border-radius: 999px;
+  color: var(--cream);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 180ms, color 180ms;
+}
+.poster-attendance button:hover { background: rgba(215, 208, 200, 0.12); }
+.poster-attendance button.is-selected { color: var(--navy-2); background: var(--cream); }
+
+.poster-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: min(100%, 24rem);
+  margin: 0 auto;
+}
+.poster-form input,
+.poster-form textarea {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 0;
+  border: 0;
+  border-bottom: 1.5px solid var(--cream);
+  border-radius: 0;
+  color: var(--cream);
+  background: transparent;
+  font-size: max(1rem, 16px); /* ≥16px keeps iOS from zooming on focus */
+  text-align: center;
+  resize: vertical;
+}
+.poster-form input::placeholder,
+.poster-form textarea::placeholder { color: color-mix(in oklab, var(--cream), transparent 42%); }
+.poster-form input[aria-invalid="true"] { border-color: var(--error); border-width: 2px; }
+.poster-form input:disabled, .poster-form textarea:disabled { cursor: not-allowed; opacity: 0.6; }
+.poster-form textarea { margin-top: 1.25rem; }
+.error-message {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.75rem;
+  color: var(--error);
+  font-size: 0.85rem;
+}
+.error-message span { display: grid; place-items: center; width: 1.2rem; height: 1.2rem; border: 1px solid; border-radius: 50%; }
+.privacy-note { margin: 1.25rem 0 0; color: color-mix(in oklab, var(--cream), transparent 30%); font-size: 0.72rem; line-height: 1.5; }
+
+.primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.5rem;
+  margin-top: 1.75rem;
+  padding: 0 1.5rem;
+  border: 1.5px solid var(--cream);
+  border-radius: 999px;
+  color: var(--navy-2);
+  background: var(--cream);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: opacity 180ms;
+}
+.primary-button:hover { opacity: 0.85; }
+.primary-button:disabled { cursor: wait; opacity: 0.6; }
+
+.location-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  margin-top: 0.5rem;
+  padding: 0 1.25rem;
+  border: 1.5px solid var(--cream);
+  border-radius: 999px;
+  color: var(--cream);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 180ms, background 180ms;
+}
+.location-button:hover { color: var(--navy-2); background: var(--cream); }
+
+.poster-reply {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.poster-reply-photo { width: min(60vw, 16rem); filter: saturate(0.85); }
+/* The confirmation video reuses this class for identical sizing. Unlike the
+   photo it replaces, a <video> needs an explicit box for `object-fit` to do
+   anything — this picks the same portrait ratio as the old photo (gift:
+   1600×2396) so the composition doesn't shift. */
+video.poster-reply-photo { display: block; aspect-ratio: 1600 / 2396; object-fit: cover; }
+.poster-reply-text {
+  max-width: 24rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  line-height: 1.4;
+}
+
+/* ---------- Closing carousel + footer (no chapter label, no numbering) ----------
+   Self-moving "marquee" loop: the track renders the photo list twice back
+   to back and animates translateX(0 → -50%). Since the second half is an
+   exact duplicate, -50% (one full set's width) lands on a pixel-identical
+   frame to 0%, so the loop has no seam, jump or blank gap.
+   Reduced motion swaps to `.carousel-static`: a single (non-duplicated),
+   manually-scrollable row with scroll-snap instead — no animation, but
+   every photo is still reachable. */
+.closing { position: relative; padding: 4rem 0 calc(3rem + var(--safe-bottom)); }
+.carousel { overflow: hidden; }
+.carousel-track {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  width: max-content;
+  padding: 1rem 0 1.5rem;
+  animation: marquee var(--marquee-duration, 48s) linear infinite;
+  will-change: transform;
+}
+/* Desktop: hover to look at one without it sliding away. Mobile: JS toggles
+   this same class on touchstart/touchend so dragging/tapping doesn't fight
+   the page's vertical scroll. */
+.carousel:hover .carousel-track,
+.carousel-track.is-paused {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.carousel-item {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(5rem, 10vw, 7rem);
+  margin: 0;
+  filter: drop-shadow(var(--shadow-photo));
+}
+.carousel-item:nth-child(odd) { transform: rotate(-2deg); }
+.carousel-item:nth-child(even) { transform: rotate(2deg); }
+.carousel-item img {
+  width: 100%;
+  height: auto;
+  max-height: 28svh;
+  object-fit: contain;
+  filter: saturate(0.78) contrast(0.95);
+}
+.carousel-static {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.carousel-static::-webkit-scrollbar { display: none; }
+.carousel-static .carousel-track {
+  padding: 1rem var(--page) 1.5rem;
+  animation: none;
+  will-change: auto;
+}
+.carousel-static .carousel-item { scroll-snap-align: center; }
+.closing-footer {
+  margin-top: 2.5rem;
+  padding: 0 var(--page);
+  color: color-mix(in oklab, var(--cream), transparent 25%);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+/* ---------- Line-art flowers (src/LineFlower.tsx) ----------
+   Decorative only: behind .poster-content (z-index 2) but above the mobile
+   hero video overlay (z-index 1, earlier in the DOM). Each <path> has
+   pathLength="1", so a dash of 1 is always the full stroke. The gap is 2 and
+   the start offset 1.02 so the round linecap never leaves a dot before the
+   stroke starts drawing. Sizes are ~1.4× the viewBox on desktop, and
+   stroke-width compensates so the line always renders around 1.5px. */
+.line-flower {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  color: var(--cream);
+  opacity: 0.85;
+  transform-origin: 50% 100%;
+}
+.line-flower svg { display: block; width: 100%; height: auto; overflow: visible; stroke-width: 1.1; }
+.line-flower path {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.02;
+}
+.line-flower.is-visible path {
+  animation: flowerDraw 950ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: calc(var(--lf-delay, 0ms) + var(--i, 0) * 110ms);
+}
+.line-flower.is-swaying { animation: flowerSway 6s ease-in-out infinite alternate; }
+@keyframes flowerDraw { to { stroke-dashoffset: 0; } }
+@keyframes flowerSway {
+  from { transform: rotate(-2deg); }
+  to { transform: rotate(2deg); }
+}
+
+/* Placement. Width sets the size (height follows the viewBox); left/right/
+   bottom/top set the spot; `rotate` leans it (separate from the sway). */
+.flower--inv-bl { left: clamp(0.5rem, 3vw, 3rem); bottom: -1.5rem; width: 126px; }
+.flower--inv-br { right: clamp(0.5rem, 3vw, 3rem); bottom: -2rem; width: 154px; }
+.flower--inv-side { right: -1rem; top: 16%; width: 98px; rotate: -24deg; }
+.flower--rsvp-main { right: clamp(1rem, 7vw, 7rem); bottom: -1.5rem; width: 140px; }
+.flower--rsvp-leaf { right: clamp(0.25rem, 2vw, 2rem); bottom: -1.25rem; width: 70px; rotate: 18deg; }
+.line-flower.flower--reply {
+  position: relative;
+  display: inline-block;
+  width: 2rem;
+  margin-left: 0.4rem;
+  vertical-align: -0.4em;
+}
+.flower--reply svg { stroke-width: 4.7; }
+
+/* Tablet: too little side margin next to the title, and the RSVP corner
+   would start reaching the centered 24rem form. */
+@media (max-width: 1100px) {
+  .flower--inv-side,
+  .flower--rsvp-leaf { display: none; }
+  .flower--rsvp-main { right: 0.5rem; width: 100px; }
+  .flower--rsvp-main svg { stroke-width: 1.5; }
+}
+
+@keyframes arrowBob { 50% { transform: translateY(0.4rem); } }
+
+@media (max-width: 700px) {
+  :root { --page: 1.1rem; --space-y: 5.5rem; }
+
+  .poster { padding-bottom: calc(5.5rem + var(--safe-bottom)); }
+  .poster-1 .poster-title { font-size: clamp(2.6rem, 11vw, 4.5rem); }
+  .poster-2 .poster-title { font-size: clamp(3rem, 15vw, 5.5rem); }
+  .poster-subtitle { margin-bottom: 2rem; }
+  .poster-details { margin-bottom: 2rem; }
+
+  .poster-attendance { flex-direction: column; align-items: stretch; width: 100%; }
+  .poster-attendance button { width: 100%; }
+
+  .carousel-item { width: clamp(4.5rem, 28vw, 6rem); }
+
+  /* Mobile: max 2 per section (App.tsx skips the rest), corners only. */
+  .flower--inv-bl { left: -0.25rem; bottom: -1.25rem; width: 56px; }
+  .flower--inv-br { right: -0.25rem; bottom: -1.5rem; width: 72px; }
+  .flower--rsvp-main { right: 0.25rem; bottom: -1.25rem; width: 60px; }
+  .flower--inv-bl svg,
+  .flower--inv-br svg,
+  .flower--rsvp-main svg { stroke-width: 2.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  [data-reveal="stagger"] > :not(picture),
+  [data-reveal="stagger"] > picture > img,
+  [data-reveal="self"],
+  [data-reveal="photo"] {
+    opacity: 1;
+    translate: none;
+    scale: none;
+  }
+  /* Belt and suspenders: App.tsx already skips rendering the duplicated,
+     animated marquee markup when this preference is on, but this stops the
+     animation outright even if that check is ever bypassed. */
+  .carousel-track { animation: none !important; will-change: auto; }
+  /* Flowers show up fully drawn, no stroke animation and no sway. */
+  .line-flower,
+  .line-flower path { animation: none !important; }
+  .line-flower path { stroke-dashoffset: 0; }
+}
