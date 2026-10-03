@@ -12,7 +12,8 @@ import {
   stripes as personStripes,
   wave as personWave,
 } from "./assets/optimized"
-import confirmClip from "./assets/confirm-clip.mp4"
+import confirmClipWebp from "./assets/confirm-clip.webp"
+import confirmClipPoster from "./assets/confirm-clip-poster.jpg"
 import auroraDanSrc from "./assets/auroraDan.png"
 import clownDanSrc from "./assets/clowndan.png"
 import deadDanSrc from "./assets/deadDan.png"
@@ -20,7 +21,7 @@ import normieDanSrc from "./assets/normieDan.png"
 import omgDanSrc from "./assets/omgDan.png"
 import smartLittleDanSrc from "./assets/smartLittleDan.png"
 import stemDanSrc from "./assets/stemDan.png"
-import heroMobileBg from "./assets/hero-mobile-bg.mp4"
+import heroMobileBgWebp from "./assets/hero-mobile-bg.webp"
 import heroMobilePoster from "./assets/hero-mobile-poster.jpg"
 import LineFlower from "./LineFlower"
 import Picture, { ResponsiveImage } from "./Picture"
@@ -134,25 +135,12 @@ function App() {
   // ~4.5s of travel per photo keeps the pace steady regardless of count.
   const marqueeDuration = `${carouselPhotos.length * 4.5}s`
 
-  // Section 1's video background: mobile only (the PNG path from an earlier
-  // version is gone entirely — on desktop/tablet this chapter is just flat
-  // color), and paused when the tab isn't visible.
+  // Section 1's background: mobile only (on desktop/tablet this chapter is
+  // just flat color). An animated WebP <img> instead of a <video> — iOS
+  // Safari won't autoplay a muted <video> reliably (it shows a play button
+  // over it), but an <img> just plays, everywhere, with no JS needed.
   const isMobile = useIsMobile()
   const videoReducedMotion = usePrefersReducedMotion()
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!isMobile || !video || videoReducedMotion) return
-
-    const syncPlayback = () => {
-      if (document.hidden) video.pause()
-      else video.play().catch(() => {})
-    }
-    syncPlayback()
-    document.addEventListener("visibilitychange", syncPlayback)
-    return () => document.removeEventListener("visibilitychange", syncPlayback)
-  }, [isMobile, videoReducedMotion])
 
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({
@@ -270,20 +258,11 @@ function App() {
       >
         {isMobile && (
           <div className="hero-video" aria-hidden="true">
-            <video
-              ref={videoRef}
+            <img
               className="hero-video-el"
-              poster={heroMobilePoster}
-              muted
-              loop
-              playsInline
-              autoPlay={!videoReducedMotion}
-              preload={videoReducedMotion ? "none" : "auto"}
-            >
-              {!videoReducedMotion && (
-                <source src={heroMobileBg} type="video/mp4" />
-              )}
-            </video>
+              src={videoReducedMotion ? heroMobilePoster : heroMobileBgWebp}
+              alt=""
+            />
             <div className="hero-video-overlay" />
           </div>
         )}
@@ -435,18 +414,12 @@ function App() {
             <div className="poster-reply">
               {reply.attendance === "yes" ? (
                 <>
-                  <video
+                  <img
                     className="poster-reply-photo"
-                    poster={personGift.src}
-                    autoPlay={!videoReducedMotion}
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
+                    src={videoReducedMotion ? confirmClipPoster : confirmClipWebp}
+                    alt=""
                     aria-hidden="true"
-                  >
-                    <source src={confirmClip} type="video/mp4" />
-                  </video>
+                  />
                   <p className="poster-reply-text">
                     arre, quedaste en la lista :D, {reply.name} ♡
                     <LineFlower variant="wildflower" className="flower--reply" delay={200} />
