@@ -11,33 +11,21 @@ import {
   shades as photoShades,
   stripes as personStripes,
   wave as personWave,
+  auroraDan,
+  clowndan as clownDan,
+  deadDan,
+  normieDan,
+  omgDan,
+  smartLittleDan,
+  stemDan,
 } from "./assets/optimized"
 import confirmClipWebp from "./assets/confirm-clip.webp"
 import confirmClipPoster from "./assets/confirm-clip-poster.jpg"
-import auroraDanSrc from "./assets/auroraDan.png"
-import clownDanSrc from "./assets/clowndan.png"
-import deadDanSrc from "./assets/deadDan.png"
-import normieDanSrc from "./assets/normieDan.png"
-import omgDanSrc from "./assets/omgDan.png"
-import smartLittleDanSrc from "./assets/smartLittleDan.png"
-import stemDanSrc from "./assets/stemDan.png"
 import heroMobileBgWebp from "./assets/hero-mobile-bg.webp"
 import heroMobilePoster from "./assets/hero-mobile-poster.jpg"
 import LineFlower from "./LineFlower"
 import Picture, { ResponsiveImage } from "./Picture"
 import useScrollTheme from "./useScrollTheme"
-
-/** These portraits haven't been run through `scripts/optimize-images.mjs`
- * yet, so they have no avif/webp variants — just the original file. */
-const asImage = (src: string): ResponsiveImage => ({ src })
-const auroraDan = asImage(auroraDanSrc)
-const clownDan = asImage(clownDanSrc)
-const deadDan = asImage(deadDanSrc)
-const normieDan = asImage(normieDanSrc)
-const omgDan = asImage(omgDanSrc)
-const smartLittleDan = asImage(smartLittleDanSrc)
-const stemDan = asImage(stemDanSrc)
-
 
 /** Same breakpoint the rest of the site uses for its mobile layout (see the
  * `@media (max-width: 700px)` rules in index.css). */
@@ -282,8 +270,6 @@ function App() {
             <p>10 de octubre, 2026</p>
             <p>5:00 PM</p>
             <p>Clandestina Pizza</p>
-            {/* Pendiente: pon aquí el link real de Google Maps cuando lo
-                tengas confirmado. */}
             <a
               className="location-button"
               href="https://maps.app.goo.gl/9X9bPHvcJdrPdy2S8?g_st=iw"
