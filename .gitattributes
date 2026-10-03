@@ -4,15 +4,9 @@
 # ---------------------------------------------------------------------------
 # Images & Graphics
 # ---------------------------------------------------------------------------
-*.png                filter=lfs diff=lfs merge=lfs -text
-*.jpg                filter=lfs diff=lfs merge=lfs -text
-*.jpeg               filter=lfs diff=lfs merge=lfs -text
-*.gif                filter=lfs diff=lfs merge=lfs -text
 *.bmp                filter=lfs diff=lfs merge=lfs -text
 *.tiff               filter=lfs diff=lfs merge=lfs -text
 *.tif                filter=lfs diff=lfs merge=lfs -text
-*.ico                filter=lfs diff=lfs merge=lfs -text
-*.webp               filter=lfs diff=lfs merge=lfs -text
 *.psd                filter=lfs diff=lfs merge=lfs -text
 *.ai                 filter=lfs diff=lfs merge=lfs -text
 *.sketch             filter=lfs diff=lfs merge=lfs -text
@@ -20,7 +14,6 @@
 # ---------------------------------------------------------------------------
 # Video
 # ---------------------------------------------------------------------------
-*.mp4                filter=lfs diff=lfs merge=lfs -text
 *.mov                filter=lfs diff=lfs merge=lfs -text
 *.avi                filter=lfs diff=lfs merge=lfs -text
 *.mkv                filter=lfs diff=lfs merge=lfs -text
@@ -75,10 +68,6 @@
 *.docx               filter=lfs diff=lfs merge=lfs -text
 *.xlsx               filter=lfs diff=lfs merge=lfs -text
 *.pptx               filter=lfs diff=lfs merge=lfs -text
-*.ttf                filter=lfs diff=lfs merge=lfs -text
-*.otf                filter=lfs diff=lfs merge=lfs -text
-*.woff               filter=lfs diff=lfs merge=lfs -text
-*.woff2              filter=lfs diff=lfs merge=lfs -text
 *.eot                filter=lfs diff=lfs merge=lfs -text
 
 # ---------------------------------------------------------------------------
