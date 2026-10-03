@@ -199,13 +199,23 @@ section[data-bg] { background: transparent; }
    video fills the chapter instead of the flat color alone. */
 /* Fades out before the bottom edge so the chapter blends into
    useScrollTheme's gradient instead of cutting hard into chapter 2. */
+/* .poster's own padding-top reserves `--safe-top` so .poster-content clears
+   the status bar — but that same padding was pushing this background down
+   with it, leaving a flat strip above the clip. Pulling the top up by
+   `--safe-top` and growing the height to match re-extends it to the real
+   top edge, behind the status bar, without touching that padding (the text
+   still needs it). */
 .hero-video {
   position: absolute;
-  inset: 0;
+  top: calc(-1 * var(--safe-top));
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: calc(100% + var(--safe-top));
   z-index: 0;
   overflow: hidden;
-  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 70%, transparent 100%);
 }
 .hero-video-el { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 /* Flat navy tint so the cream text stays readable no matter which video
