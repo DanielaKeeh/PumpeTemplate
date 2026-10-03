@@ -162,14 +162,26 @@ function App() {
     return () => observer.disconnect()
   }, [])
 
-  // Both outcomes now render through the same form (the Apps Script needs a
-  // name either way, to know who's not coming too), so there's nothing left
-  // to scroll to on choosing — just reset and focus the name field.
+  // "no" resolves instantly, right where the form would've gone — there's no
+  // name to collect and nothing to send the Apps Script. "yes" still needs a
+  // name before it can submit, so it goes to the form instead.
   const chooseAttendance = (value: Exclude<Attendance, null>) => {
     setAttendance(value)
     setError("")
     setStatus("idle")
+    if (value === "no") {
+      setReply({ name: "", attendance: "no", timestamp: new Date().toISOString() })
+    } else {
+      setReply(null)
+      window.setTimeout(() => nameInput.current?.focus(), 100)
+    }
+  }
+
+  const reconsiderYes = () => {
+    setAttendance("yes")
     setReply(null)
+    setError("")
+    setStatus("idle")
     window.setTimeout(() => nameInput.current?.focus(), 100)
   }
 
@@ -276,7 +288,7 @@ function App() {
               target="_blank"
               rel="noreferrer"
             >
-              Ver ubicación <span aria-hidden="true">↗</span>
+              Ver ubicación <span aria-hidden="true">:D</span>
             </a>
           </div>
 
@@ -301,6 +313,7 @@ function App() {
         aria-live="polite"
       >
         <LineFlower variant="wildflower" className="flower--rsvp-main" />
+        <LineFlower variant="lily" className="flower--rsvp-bl" delay={300} />
         {!isMobile && (
           <LineFlower variant="leaf" className="flower--rsvp-leaf" delay={300} />
         )}
@@ -335,7 +348,7 @@ function App() {
                 </button>
               </fieldset>
 
-              {attendance && (
+              {attendance === "yes" && (
                 <form className="rsvp-form poster-form" onSubmit={submitRsvp} noValidate>
                   <label htmlFor="rsvp-name" className="sr-only">
                     Tu nombre
@@ -387,7 +400,7 @@ function App() {
                     disabled={status === "submitting"}
                   >
                     {status === "submitting" ? "enviando…" : "confirmar respuesta"}
-                    <span aria-hidden="true">↗</span>
+                    <span aria-hidden="true">:D</span>
                   </button>
                   <p className="privacy-note">
                     Tu respuesta se guardará en una lista,
@@ -408,13 +421,18 @@ function App() {
                   />
                   <p className="poster-reply-text">
                     arre, quedaste en la lista :D, {reply.name} ♡
-                    <LineFlower variant="wildflower" className="flower--reply" delay={200} />
+                    <LineFlower variant="lavender" className="flower--reply" delay={200} />
                   </p>
                 </>
               ) : (
-                <p className="poster-reply-text">
-                  chale, tons será pal otro año :c
-                </p>
+                <>
+                  <p className="poster-reply-text">
+                    Chale, tons pal próximo año amistad :(
+                  </p>
+                  <button type="button" className="reconsider-link" onClick={reconsiderYes}>
+                    me equivoqué, sí voy
+                  </button>
+                </>
               )}
             </div>
           )}

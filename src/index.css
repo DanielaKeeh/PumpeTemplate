@@ -367,6 +367,19 @@ section[data-bg] { background: transparent; }
   font-size: clamp(1.2rem, 2.5vw, 1.6rem);
   line-height: 1.4;
 }
+.reconsider-link {
+  padding: 0.25rem 0.5rem;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  opacity: 0.85;
+  cursor: pointer;
+}
+.reconsider-link:hover { opacity: 1; }
 
 /* ---------- Closing carousel + footer (no chapter label, no numbering) ----------
    Self-moving "marquee" loop: the track renders the photo list twice back
@@ -475,15 +488,19 @@ section[data-bg] { background: transparent; }
 .flower--inv-br { right: clamp(0.5rem, 3vw, 3rem); bottom: -2rem; width: 154px; }
 .flower--inv-side { right: -1rem; top: 16%; width: 98px; rotate: -24deg; }
 .flower--rsvp-main { right: clamp(1rem, 7vw, 7rem); bottom: -1.5rem; width: 140px; }
+.flower--rsvp-bl { left: clamp(0.5rem, 3vw, 3rem); bottom: -2rem; width: 154px; }
 .flower--rsvp-leaf { right: clamp(0.25rem, 2vw, 2rem); bottom: -1.25rem; width: 70px; rotate: 18deg; }
+/* Sized to sit on the text line next to the heart, not float above it like
+   the bigger corner flowers — width is tuned to lavender's narrow viewBox
+   (70×160) so it renders close to the line's height. */
 .line-flower.flower--reply {
   position: relative;
   display: inline-block;
-  width: 2rem;
+  width: 0.6em;
   margin-left: 0.4rem;
-  vertical-align: -0.4em;
+  vertical-align: -0.05em;
 }
-.flower--reply svg { stroke-width: 4.7; }
+.flower--reply svg { stroke-width: 7; }
 
 /* Tablet: too little side margin next to the title, and the RSVP corner
    would start reaching the centered 24rem form. */
@@ -514,9 +531,11 @@ section[data-bg] { background: transparent; }
   .flower--inv-bl { left: -0.25rem; bottom: -1.25rem; width: 56px; }
   .flower--inv-br { right: -0.25rem; bottom: -1.5rem; width: 72px; }
   .flower--rsvp-main { right: 0.25rem; bottom: -1.25rem; width: 60px; }
+  .flower--rsvp-bl { left: -0.25rem; bottom: -1.5rem; width: 72px; }
   .flower--inv-bl svg,
   .flower--inv-br svg,
-  .flower--rsvp-main svg { stroke-width: 2.4; }
+  .flower--rsvp-main svg,
+  .flower--rsvp-bl svg { stroke-width: 2.4; }
 }
 
 @media (prefers-reduced-motion: reduce) {
