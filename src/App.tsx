@@ -11,32 +11,20 @@ import {
   shades as photoShades,
   stripes as personStripes,
   wave as personWave,
+  auroraDan,
+  clowndan as clownDan,
+  deadDan,
+  normieDan,
+  omgDan,
+  smartLittleDan,
+  stemDan,
 } from "./assets/optimized"
 import confirmClip from "./assets/confirm-clip.mp4"
-import auroraDanSrc from "./assets/auroraDan.png"
-import clownDanSrc from "./assets/clowndan.png"
-import deadDanSrc from "./assets/deadDan.png"
-import normieDanSrc from "./assets/normieDan.png"
-import omgDanSrc from "./assets/omgDan.png"
-import smartLittleDanSrc from "./assets/smartLittleDan.png"
-import stemDanSrc from "./assets/stemDan.png"
 import heroMobileBg from "./assets/hero-mobile-bg.mp4"
 import heroMobilePoster from "./assets/hero-mobile-poster.jpg"
 import LineFlower from "./LineFlower"
 import Picture, { ResponsiveImage } from "./Picture"
 import useScrollTheme from "./useScrollTheme"
-
-/** These portraits haven't been run through `scripts/optimize-images.mjs`
- * yet, so they have no avif/webp variants — just the original file. */
-const asImage = (src: string): ResponsiveImage => ({ src })
-const auroraDan = asImage(auroraDanSrc)
-const clownDan = asImage(clownDanSrc)
-const deadDan = asImage(deadDanSrc)
-const normieDan = asImage(normieDanSrc)
-const omgDan = asImage(omgDanSrc)
-const smartLittleDan = asImage(smartLittleDanSrc)
-const stemDan = asImage(stemDanSrc)
-
 
 /** Same breakpoint the rest of the site uses for its mobile layout (see the
  * `@media (max-width: 700px)` rules in index.css). */
